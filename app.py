@@ -1,5 +1,4 @@
 from aiogram.utils import executor
-# from create_bot import dp
 
 from handlers import dp
 from utils.notify_admins import on_startup_notify
