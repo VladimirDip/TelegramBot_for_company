@@ -1,11 +1,56 @@
-from aiogram.types import KeyboardButton, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
+import logging
 
-catalog_button = 'Download Catalog'
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.utils.callback_data import CallbackData
 
-inline_btn_1 = InlineKeyboardButton('Скачать новогодний каталог ч2', callback_data='Catalog_new_year2')
-inline_btn_2 = InlineKeyboardButton('Скачать каталог опор', callback_data='Catalog_opors')
+menu_callback_data = CallbackData('show_menu', 'level')
 
-inline_kb1 = InlineKeyboardMarkup(row_width=1)
 
-inline_kb1.add(inline_btn_1).insert(inline_btn_2)
+def _make_callback_data(level):
+    return menu_callback_data.new(level=level )
+
+
+async def first_level_menu():
+    CURRENT_LEVEL = 'level_menu'
+    markup = InlineKeyboardMarkup(row_width=1)
+    callback_data_button_1 = _make_callback_data(level='our_way')
+    callback_data_button_2 = _make_callback_data(level='level_catalogs')
+
+    markup.add(InlineKeyboardButton(text='Как нас найти', callback_data=callback_data_button_1))
+    markup.add(InlineKeyboardButton(text='Каталоги', callback_data=callback_data_button_2))
+
+    return markup
+
+
+async def second_level_menu():
+    CURRENT_LEVEL = 'level_catalogs'
+    markup = InlineKeyboardMarkup(row_width=1)
+    callback_data_button_1 = 'Catalog_new_year2'
+    callback_data_button_2 = 'Catalog_opors'
+
+    markup.add(InlineKeyboardButton(text='Скачать новогодний каталог ч2', callback_data=callback_data_button_1))
+    markup.add(InlineKeyboardButton(text='Скачать каталог опор', callback_data=callback_data_button_2))
+    markup.add(
+        InlineKeyboardButton(
+            text='Назад',
+            callback_data=_make_callback_data(level='level_menu')
+        )
+    )
+    return markup
+
+
+async def our_way():
+    CURRENT_LEVEL = 'our_way'
+    markup = InlineKeyboardMarkup(row_width=1)
+    callback_data_button_2 = 'our_place'
+
+    markup.add(InlineKeyboardButton(text='Наш сайт', url='https://mg-l.ru/'))
+    markup.add(InlineKeyboardButton(text='Где мы находимся?', callback_data=callback_data_button_2))
+    markup.add(
+        InlineKeyboardButton(
+            text='Назад',
+            callback_data=_make_callback_data(level='level_menu')
+        )
+    )
+    return markup
 
