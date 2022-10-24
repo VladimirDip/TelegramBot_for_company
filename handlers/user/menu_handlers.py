@@ -1,11 +1,9 @@
-import logging
 from typing import Union
 from aiogram import types
 
 from keyboard.user_buttons import first_level_menu, menu_callback_data, second_level_menu, our_way
 
 from create_bot import dp
-logging.basicConfig(level=logging.INFO)
 
 
 @dp.message_handler(text='/start')
@@ -59,7 +57,7 @@ async def navigate(callback: types.CallbackQuery, callback_data: dict):
     levels = {
         'level_menu': show_menu,
         'level_catalogs': menu_catalogs,
-        'our_way': about_us
+        'level_our_way': about_us
     }
 
     current_level_function = levels[current_level]
