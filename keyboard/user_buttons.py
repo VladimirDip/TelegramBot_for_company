@@ -3,13 +3,14 @@ from aiogram.utils.callback_data import CallbackData
 
 from utils.db_api.database import session
 from utils.db_api.models import Catalogs
+
 session_connector = session()
 
 menu_callback_data = CallbackData('show_menu', 'level')
 
 
 def _make_callback_data(level):
-    return menu_callback_data.new(level=level )
+    return menu_callback_data.new(level=level)
 
 
 async def first_level_menu():
@@ -18,8 +19,12 @@ async def first_level_menu():
     callback_data_button_1 = _make_callback_data(level='level_our_way')
     callback_data_button_2 = _make_callback_data(level='level_catalogs')
 
+    callback_data_button_3 = _make_callback_data(level='level_registration_admin')
+
     markup.add(InlineKeyboardButton(text='Как нас найти', callback_data=callback_data_button_1))
     markup.add(InlineKeyboardButton(text='Каталоги', callback_data=callback_data_button_2))
+    """It will be late"""
+    # markup.add(InlineKeyboardButton(text='Администрация', callback_data=callback_data_button_3))
 
     return markup
 
@@ -53,3 +58,20 @@ async def our_way():
     )
     return markup
 
+
+async def admin_registration():
+    CURRENT_LEVEL = 'level_registration_admin'
+    markup = InlineKeyboardMarkup(row_width=1)
+    callback_data_button_0 = 'check_admin_for_you'
+    callback_data_button_1 = 'authorization'
+
+    markup.add(InlineKeyboardButton(text='Являешься ли ты админом?', callback_data=callback_data_button_0))
+    markup.add(InlineKeyboardButton(text='Ввести код администратора', callback_data=callback_data_button_1))
+
+    markup.add(
+        InlineKeyboardButton(
+            text='Назад',
+            callback_data=_make_callback_data(level='level_menu')
+        )
+    )
+    return markup

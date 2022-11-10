@@ -11,7 +11,7 @@ ip = os.getenv('ip')
 admins = [
     692468783,
 ]
-
+ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
 PGUSER = str(os.getenv('PGUSER'))
 PGPASSWORD = str(os.getenv('PGPASSWORD'))
 DATABASE = str(os.getenv('DATABASE'))

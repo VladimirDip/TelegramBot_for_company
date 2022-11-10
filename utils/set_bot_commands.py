@@ -1,4 +1,5 @@
 from aiogram import types, Dispatcher
+from data.config import admins
 
 
 async def set_default_commands(dp: Dispatcher):

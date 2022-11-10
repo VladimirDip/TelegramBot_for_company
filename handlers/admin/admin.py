@@ -1,3 +1,4 @@
+import logging
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram import types
@@ -7,7 +8,9 @@ from utils.db_api.database import session
 from create_bot import dp
 
 from handlers.admin.admin_buttons import inline_button_1
+from filters.filters import IsAdmin
 
+logging.basicConfig(level=logging.DEBUG)
 session_connect = session()
 
 
@@ -16,7 +19,7 @@ class FSMAdmin(StatesGroup):
     title = State()
 
 
-@dp.message_handler(commands='upload', state=None)
+@dp.message_handler(IsAdmin(), commands='upload', state=None)
 async def cm_start(message: types.Message):
     await FSMAdmin.document.set()
     await message.reply('Загрузи каталог', reply_markup=inline_button_1)

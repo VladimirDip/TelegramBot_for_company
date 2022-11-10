@@ -1,9 +1,15 @@
 from typing import Union
 from aiogram import types
 
-from keyboard.user_buttons import first_level_menu, menu_callback_data, second_level_menu, our_way
+from keyboard.user_buttons import first_level_menu, menu_callback_data, \
+    second_level_menu, our_way, admin_registration
+
+from utils.db_api.db_commands import WorkWithDb
 
 from create_bot import dp
+from data.config import ADMIN_PASSWORD
+
+db = WorkWithDb()
 
 
 @dp.message_handler(text='/start')
@@ -23,6 +29,11 @@ async def show_menu(message: Union[types.Message, types.CallbackQuery], **kwargs
         if call.data == 'show_menu:level_menu':
             await call.message.edit_text(text=text)
         await call.message.edit_reply_markup(markup)
+
+
+async def check_admin(callback: types.CallbackQuery, **kwargs):
+    markup = await admin_registration()
+    await callback.message.edit_text(f'Что хочешь сделать?', reply_markup=markup)
 
 
 async def menu_catalogs(callback: types.CallbackQuery, **kwargs):
@@ -49,6 +60,35 @@ async def working_place(callback: types.CallbackQuery, **kwargs):
 
     await callback.message.edit_text(text=text, reply_markup=markup)
 
+"""It will be late"""
+# @dp.callback_query_handler(text='check_admin_for_you')
+# async def check_admin_for_you(callback: types.CallbackQuery, **kwargs):
+#     admin_exists = db.check_admin(callback.from_user.id)
+#     await callback.answer()
+#     if admin_exists is False:
+#         await callback.message.answer('Ты не являешься Админом!')
+#     else:
+#         await callback.message.answer('Ты Администратор!')
+#
+#
+# @dp.callback_query_handler(text='authorization')
+# async def authorization(callback: types.CallbackQuery, **kwargs):
+#     await callback.message.answer('Введите код администратора(только цифры)')
+#     db.add_new_admin(callback.from_user.id,
+#                      callback.from_user.first_name,
+#                      callback.from_user.last_name,
+#                      callback.from_user.username)
+#     await callback.message.answer('Reg new admin')
+#     print(*kwargs)
+
+
+# @dp.message_handler()
+# async def input_admin_password(message: types.Message):
+#     if message.text == ADMIN_PASSWORD:
+#         return True
+#     else:
+#         return False
+
 
 @dp.callback_query_handler(menu_callback_data.filter())
 async def navigate(callback: types.CallbackQuery, callback_data: dict):
@@ -57,7 +97,9 @@ async def navigate(callback: types.CallbackQuery, callback_data: dict):
     levels = {
         'level_menu': show_menu,
         'level_catalogs': menu_catalogs,
-        'level_our_way': about_us
+        'level_our_way': about_us,
+        'level_registration_admin': check_admin,
+
     }
 
     current_level_function = levels[current_level]

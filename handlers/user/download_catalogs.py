@@ -13,10 +13,9 @@ db = WorkWithDb()
 
 @dp.callback_query_handler(lambda c: c.data)
 async def process_callback_button1(callback_query: types.CallbackQuery):
-    path = db.get_one_value(Catalogs.path, Catalogs.title, callback_query.data)
+    path = db.get_path_catalogs(Catalogs.title, callback_query.data)
 
     await dp.bot.send_document(chat_id=callback_query.from_user.id, document=path)
     text = f'пожалуйста ваш catalog'
 
-    print(callback_query.id)
     await callback_query.answer(text=text, show_alert=True,)
